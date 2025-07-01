@@ -526,7 +526,7 @@
             }
             
             // Fetch user info from server
-            fetch(`http://localhost:3000/api/user?token=${authToken}`)
+            fetch(`https://modernsite-totelimon.vercel.app/api/user?token=${authToken}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
@@ -609,7 +609,7 @@
             
             if (authToken) {
                 // Fetch current user data from server
-                fetch(`http://localhost:3000/api/user?token=${authToken}`)
+                fetch(`https://modernsite-totelimon.vercel.app/api/user?token=${authToken}`)
                     .then(response => response.json())
                     .then(data => {
                         if (data.error) {
