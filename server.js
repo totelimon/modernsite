@@ -10,6 +10,11 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static(__dirname));
 
+// Serve index.html at root
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/index.html');
+});
+
 // In-memory storage for demo (in production, use a proper database)
 const users = [];
 
