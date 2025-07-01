@@ -1,34 +1,48 @@
 // Shared in-memory database for all API functions
 // In production, use a real database like MongoDB Atlas or Supabase
 
-let users = [];
+const mongoose = require('mongoose');
 
-const db = {
-  // Add a new user
-  createUser: (userData) => {
-    const newUser = {
-      id: users.length + 1,
-      ...userData,
-      created_at: new Date()
-    };
-    users.push(newUser);
-    return newUser;
+// MongoDB connection string - you'll replace this with your actual connection string
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://your-username:your-password@your-cluster.mongodb.net/modernsite?retryWrites=true&w=majority';
+
+// Connect to MongoDB
+mongoose.connect(MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+db.once('open', () => {
+  console.log('Connected to MongoDB successfully!');
+});
+
+// User Schema
+const userSchema = new mongoose.Schema({
+  username: {
+    type: String,
+    required: true,
+    trim: true
   },
-
-  // Find user by email
-  findUserByEmail: (email) => {
-    return users.find(user => user.email === email);
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+    lowercase: true
   },
-
-  // Find user by ID
-  findUserById: (id) => {
-    return users.find(user => user.id === id);
+  password_hash: {
+    type: String,
+    required: true
   },
-
-  // Get all users (for debugging)
-  getAllUsers: () => {
-    return users;
+  created_at: {
+    type: Date,
+    default: Date.now
   }
-};
+});
 
-module.exports = db; 
+// Create and export the User model
+const User = mongoose.model('User', userSchema);
+
+module.exports = { User, db }; 
