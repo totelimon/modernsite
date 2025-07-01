@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Properties - HOUSING REAL ESTATE</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .top-header {
+            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            gap: 40px;
+            position: relative;
+        }
+        .logo {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: 2px solid white;
+            background: transparent;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        .btn:hover {
+            background: white;
+            color: #4CAF50;
+        }
+        .main-content {
+            flex: 1;
+            display: flex;
+            background: #f8f9fa;
+        }
+        .left-section {
+            flex: 1;
+            padding: 30px;
+            background: white;
+            border-right: 1px solid #e0e0e0;
+        }
+        .right-section {
+            flex: 1;
+            padding: 30px;
+            background: white;
+        }
+        .bottom-header {
+            background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+            padding: 30px;
+            text-align: center;
+        }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+        }
+        .footer-link {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: opacity 0.3s ease;
+        }
+        .footer-link:hover {
+            opacity: 0.8;
+        }
+        /* Dark theme styles */
+        body.dark-theme {
+            background: #1a1a1a;
+            color: #ffffff;
+        }
+        body.dark-theme .top-header {
+            background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+        }
+        body.dark-theme .main-content {
+            background: #2d2d2d;
+        }
+        body.dark-theme .left-section,
+        body.dark-theme .right-section {
+            background: #333333;
+            border-color: #444444;
+        }
+        body.dark-theme .bottom-header {
+            background: linear-gradient(135deg, #1B5E20 0%, #0d2e0f 100%);
+        }
+        .back-arrow {
+            position: absolute;
+            left: 20px;
+            color: white;
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-decoration: none;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+        }
+        .back-arrow:hover {
+            text-decoration: underline;
+            background: none !important;
+        }
+    </style>
+</head>
+<body>
+    <header class="top-header" style="position:relative; justify-content:center;">
+        <a href="index.html" class="back-arrow">&#8592;</a>
+        <a href="index.html" class="logo">PREMIUM REAL ESTATE</a>
+        <div class="auth-buttons">
+            <a href="#" class="btn">Login</a>
+            <a href="#" class="btn">Sign Up</a>
+        </div>
+    </header>
+    <main class="main-content">
+        <section class="center-section" style="margin:auto;max-width:600px;width:100%;display:flex;flex-direction:column;align-items:center;">
+            <button id="openPropertyFormBtn" style="margin:40px 0 24px 0;padding:14px 32px;font-size:1.1rem;background:#4CAF50;color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;">+ Add Property</button>
+            <!-- Property Submission Modal -->
+            <div id="propertyFormModal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.5);z-index:10001;align-items:center;justify-content:center;">
+                <form id="propertyForm" style="background:white;padding:32px 28px;border-radius:14px;max-width:420px;width:95vw;box-shadow:0 8px 32px rgba(0,0,0,0.18);position:relative;display:flex;flex-direction:column;gap:16px;">
+                    <button type="button" onclick="closePropertyFormModal()" style="position:absolute;top:10px;right:10px;font-size:1.5rem;background:none;border:none;cursor:pointer;">&times;</button>
+                    <h2 style="margin-bottom:10px;">Submit New Property</h2>
+                    <input name="title" type="text" placeholder="Title" required style="padding:10px;border-radius:6px;border:1px solid #ccc;">
+                    <input name="price" type="number" placeholder="Price" required style="padding:10px;border-radius:6px;border:1px solid #ccc;">
+                    <input name="address" type="text" placeholder="Address" required style="padding:10px;border-radius:6px;border:1px solid #ccc;">
+                    <textarea name="description" placeholder="Description" required style="padding:10px;border-radius:6px;border:1px solid #ccc;resize:vertical;"></textarea>
+                    <div style="display:flex;gap:10px;">
+                        <input name="bedrooms" type="number" min="0" placeholder="Bedrooms" required style="flex:1;padding:10px;border-radius:6px;border:1px solid #ccc;">
+                        <input name="bathrooms" type="number" min="0" placeholder="Bathrooms" required style="flex:1;padding:10px;border-radius:6px;border:1px solid #ccc;">
+                    </div>
+                    <select name="type" required style="padding:10px;border-radius:6px;border:1px solid #ccc;">
+                        <option value="">Property Type</option>
+                        <option value="house">House</option>
+                        <option value="condo">Condo</option>
+                        <option value="apartment">Apartment</option>
+                        <option value="townhouse">Townhouse</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <input name="images" type="file" accept="image/*" multiple style="padding:10px 0;">
+                    <button type="submit" style="margin-top:10px;padding:12px 0;background:#4CAF50;color:white;border:none;border-radius:8px;font-weight:600;font-size:1.1rem;cursor:pointer;">Submit Property</button>
+                </form>
+            </div>
+        </section>
+    </main>
+    <footer class="bottom-header">
+        <div class="footer-links">
+            <a href="contact.html" class="footer-link">Contact</a>
+            <a href="about.html" class="footer-link">About Us</a>
+            <a href="faq.html" class="footer-link">FAQ</a>
+        </div>
+    </footer>
+    <script>
+        // Load and apply saved theme
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme') || 'Light';
+            if (savedTheme === 'Dark') {
+                document.body.classList.add('dark-theme');
+            } else {
+                document.body.classList.remove('dark-theme');
+            }
+            document.getElementById('openPropertyFormBtn').onclick = function() {
+                document.getElementById('propertyFormModal').style.display = 'flex';
+            };
+        });
+        function closePropertyFormModal() {
+            document.getElementById('propertyFormModal').style.display = 'none';
+        }
+        // Close modal when clicking outside form
+        document.addEventListener('mousedown', function(event) {
+            const modal = document.getElementById('propertyFormModal');
+            if (modal && modal.style.display !== 'none' && event.target === modal) {
+                closePropertyFormModal();
+            }
+        });
+    </script>
+</body>
+</html> 

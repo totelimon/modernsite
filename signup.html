@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Premium Real Estate</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8f9fa; display: flex; align-items: center; justify-content: center; height: 100vh; }
+        .signup-container { background: white; padding: 32px 28px; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.10); width: 100%; max-width: 350px; }
+        h2 { text-align: center; margin-bottom: 24px; color: #2E7D32; }
+        .form-group { margin-bottom: 18px; }
+        label { display: block; margin-bottom: 6px; color: #333; font-weight: 500; }
+        input { width: 100%; padding: 10px 12px; border-radius: 6px; border: 1px solid #ccc; font-size: 1rem; }
+        button { width: 100%; padding: 10px 0; border-radius: 6px; background: #4CAF50; color: white; border: none; font-weight: 600; font-size: 1.1rem; cursor: pointer; margin-top: 10px; }
+        .error { color: #c00; margin-bottom: 10px; text-align: center; }
+        .login-link { display: block; text-align: center; margin-top: 18px; color: #2E7D32; text-decoration: none; font-size: 0.98rem; }
+    </style>
+</head>
+<body>
+    <a href="index.html" style="position:absolute;left:24px;top:24px;font-size:2.2rem;color:white;text-decoration:none;background:#4CAF50;border-radius:50%;width:44px;height:44px;display:flex;align-items:center;justify-content:center;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,0.10);">&#8592;</a>
+    <div class="signup-container">
+        <h2>Sign Up</h2>
+        <form id="signupForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="error" id="errorMsg" style="display:none;"></div>
+            <button type="submit">Sign Up</button>
+        </form>
+        <a href="login.html" class="login-link">Already have an account? Login</a>
+    </div>
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            document.getElementById('errorMsg').style.display = 'none';
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            
+            console.log('Attempting signup with:', { username, email, password: '***' });
+            
+            try {
+                const res = await fetch('http://localhost:3000/api/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, email, password })
+                });
+                
+                console.log('Response status:', res.status);
+                const data = await res.json();
+                console.log('Response data:', data);
+                
+                if (res.ok && data.token) {
+                    localStorage.setItem('authToken', data.token);
+                    console.log('Signup successful, redirecting...');
+                    window.location.href = 'index.html';
+                } else {
+                    const errorMsg = data.error || 'Sign up failed.';
+                    console.log('Signup failed:', errorMsg);
+                    document.getElementById('errorMsg').textContent = errorMsg;
+                    document.getElementById('errorMsg').style.display = 'block';
+                }
+            } catch (err) {
+                console.error('Network error:', err);
+                document.getElementById('errorMsg').textContent = 'Network error: ' + err.message;
+                document.getElementById('errorMsg').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,1798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HOUSING REAL ESTATE</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-header {
+            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            gap: 40px;
+        }
+
+        .logo {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .search-container {
+            flex: 1;
+            margin: 0 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .search-bar {
+            width: 400px;
+            min-width: 180px;
+            margin: 0 auto;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            outline: none;
+            transition: width 0.3s cubic-bezier(.4,1.3,.5,1), box-shadow 0.2s;
+        }
+
+        .search-bar:focus {
+            width: 520px;
+            box-shadow: 0 0 0 2px #4CAF50;
+            z-index: 2;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: 2px solid white;
+            background: transparent;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .btn:hover {
+            background: white;
+            color: #4CAF50;
+        }
+
+        .btn.logout-btn {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn.logout-btn:hover {
+            background: white;
+            color: #f44336;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .nav-tabs {
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            gap: 12px;
+        }
+
+        .nav-tab {
+            padding: 15px 30px;
+            background: transparent;
+            border: none;
+            color: #666;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            border-radius: 8px 8px 0 0;
+            margin-bottom: -1px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+        }
+
+        .nav-tab:not(:last-child) {
+            border-right: 1px solid #e0e0e0;
+        }
+
+        .nav-tab:hover {
+            color: #4CAF50;
+            background: #f8f9fa;
+        }
+
+        .nav-tab.active {
+            color: #4CAF50;
+            border-bottom-color: #4CAF50;
+            background: #f0f8f0;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: flex;
+            flex: 1;
+            background: #f8f9fa;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            background: #f8f9fa;
+        }
+
+        .left-section {
+            flex: 1;
+            padding: 30px;
+            background: white;
+            border-right: 1px solid #e0e0e0;
+        }
+
+        .filters-section {
+            margin-bottom: 30px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .filter-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .filter-btn {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 40px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-btn:hover {
+            background: #2E7D32;
+        }
+
+        .filter-content {
+            display: none;
+            position: absolute;
+            background: white;
+            min-width: 200px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border-radius: 10px;
+            z-index: 1000;
+            padding: 15px;
+            top: 100%;
+            left: 0;
+            margin-top: 5px;
+        }
+
+        .filter-content.show {
+            display: block;
+        }
+
+        .filter-group {
+            margin-bottom: 15px;
+        }
+
+        .filter-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        .filter-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        .properties-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .property-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .property-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border-color: #4CAF50;
+        }
+
+        .property-card.active {
+            border-color: #4CAF50;
+            border-width: 3px;
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+        }
+
+        .property-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .property-info {
+            padding: 15px;
+        }
+
+        .property-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .property-price {
+            font-size: 1.2rem;
+            color: #4CAF50;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .property-location {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .property-description {
+            color: #777;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .right-section {
+            flex: 1;
+            padding: 30px;
+            background: white;
+        }
+
+        .property-details {
+            max-width: 100%;
+        }
+
+        .property-details-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .property-details-title {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .property-details-price {
+            font-size: 1.5rem;
+            color: #4CAF50;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .property-details-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            font-size: 1rem;
+        }
+
+        .amenities-section {
+            margin-top: 25px;
+        }
+
+        .amenities-title {
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .amenities-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .amenity-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        .amenity-icon {
+            color: #4CAF50;
+            font-size: 1.1rem;
+        }
+
+        .bottom-header {
+            background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+            padding: 30px;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+        }
+
+        .footer-link {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer-link:hover {
+            opacity: 0.8;
+        }
+
+        @media (max-width: 1200px) {
+            .properties-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .left-section, .right-section {
+                flex: none;
+            }
+            
+            .properties-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .top-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .search-container {
+                margin: 10px 0;
+                max-width: 100%;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+
+        .filter-actions {
+            text-align: right;
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        .filter-apply-btn, .filter-clear-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 18px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .filter-apply-btn:hover, .filter-clear-btn:hover {
+            background: #388e3c;
+        }
+        .filter-clear-btn {
+            background: #e0e0e0;
+            color: #333;
+        }
+        .filter-clear-btn:hover {
+            background: #bdbdbd;
+            color: #222;
+        }
+        .bookmark-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            cursor: pointer;
+            z-index: 2;
+            transition: background 0.2s;
+        }
+        .bookmark-btn.active {
+            color: #4CAF50;
+            border-color: #4CAF50;
+            background: #e8f5e9;
+        }
+        .property-card { position: relative; }
+
+        /* Dark theme styles */
+        body.dark-theme {
+            background: #1a1a1a;
+            color: #ffffff;
+        }
+
+        body.dark-theme .top-header {
+            background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+        }
+
+        body.dark-theme .main-content {
+            background: #2d2d2d;
+        }
+
+        body.dark-theme .left-section,
+        body.dark-theme .right-section {
+            background: #333333;
+            border-color: #444444;
+        }
+
+        body.dark-theme .property-card {
+            background: #333333;
+            border-color: #444444;
+            color: #ffffff;
+        }
+
+        body.dark-theme .property-title {
+            color: #ffffff;
+        }
+
+        body.dark-theme .property-description {
+            color: #cccccc;
+        }
+
+        body.dark-theme .property-details {
+            color: #ffffff;
+        }
+
+        body.dark-theme .property-details-title {
+            color: #ffffff;
+        }
+
+        body.dark-theme .property-details-description {
+            color: #cccccc;
+        }
+
+        body.dark-theme .amenities-title {
+            color: #ffffff;
+        }
+
+        body.dark-theme .amenity-item {
+            color: #cccccc;
+        }
+
+        body.dark-theme .nav-tabs {
+            background: #333333;
+            border-color: #444444;
+        }
+
+        body.dark-theme .nav-tab {
+            color: #cccccc;
+            border-color: #444444;
+        }
+
+        body.dark-theme .nav-tab:hover {
+            background: #444444;
+        }
+
+        body.dark-theme .nav-tab.active {
+            background: #2d2d2d;
+        }
+
+        body.dark-theme .filter-content {
+            background: #333333;
+            border-color: #444444;
+        }
+
+        body.dark-theme .filter-input {
+            background: #444444;
+            border-color: #555555;
+            color: #ffffff;
+        }
+
+        body.dark-theme .filter-label {
+            color: #ffffff;
+        }
+
+        body.dark-theme .bottom-header {
+            background: linear-gradient(135deg, #1B5E20 0%, #0d2e0f 100%);
+        }
+
+        body.dark-theme .modal-content {
+            background: #333333;
+            color: #ffffff;
+        }
+
+        body.dark-theme #createFolderModal > div {
+            background: #333333;
+            color: #ffffff;
+        }
+
+        body.dark-theme #newFolderInput {
+            background: #444444;
+            border-color: #555555;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <header class="top-header" style="justify-content:center;gap:40px;">
+        <a href="#" class="logo">PREMIUM REAL ESTATE</a>
+        <div class="search-container">
+            <input type="text" class="search-bar" placeholder="Search properties..." oninput="searchProperties(this.value)">
+        </div>
+        <button class="btn" id="savedPropertiesBtn" onclick="openSavedPropertiesModal()" style="margin-right: 10px;cursor:pointer;">🔖 Saved Properties</button>
+        <div class="auth-buttons">
+            <a href="login.html" class="btn">Login</a>
+            <a href="signup.html" class="btn">Sign Up</a>
+            <div style="position:relative;display:inline-block;">
+                <button class="hamburger-btn" id="hamburgerMenuBtn" style="background:none;border:none;cursor:pointer;padding:10px 12px;display:flex;flex-direction:column;gap:4px;justify-content:center;align-items:center;">
+                    <span style="display:block;width:24px;height:3px;background:#fff;border-radius:2px;"></span>
+                    <span style="display:block;width:24px;height:3px;background:#fff;border-radius:2px;"></span>
+                    <span style="display:block;width:24px;height:3px;background:#fff;border-radius:2px;"></span>
+                </button>
+                <div id="hamburgerDropdown" style="display:none;position:absolute;right:0;top:40px;background:white;box-shadow:0 4px 16px rgba(0,0,0,0.15);border-radius:8px;min-width:160px;z-index:10001;">
+                    <a href="myaccount.html" style="display:block;padding:12px 20px;text-decoration:none;color:#333;font-weight:500;border-bottom:1px solid #eee;">My Account</a>
+                    <a href="myproperties.html" style="display:block;padding:12px 20px;text-decoration:none;color:#333;font-weight:500;border-bottom:1px solid #eee;">My Properties</a>
+                    <a href="settings.html" style="display:block;padding:12px 20px;text-decoration:none;color:#333;font-weight:500;">Settings</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav class="nav-tabs">
+        <button class="nav-tab active" onclick="showTab('properties')">Properties</button>
+        <button class="nav-tab" onclick="showTab('furniture')">Furniture</button>
+        <button class="nav-tab" onclick="showTab('maintenance')">Maintenance</button>
+    </nav>
+
+    <div class="tab-content active" id="properties-tab">
+        <main class="main-content">
+            <section class="left-section">
+                <!-- RENT/BUY TOGGLE START -->
+                <div class="property-type-tabs" style="display: flex; justify-content: center; margin-bottom: 15px; gap: 15px;">
+                    <button class="property-type-tab active" id="buyTab" onclick="showPropertyType('buy')" style="padding: 12px 40px; border: 2px solid #4CAF50; background: #4CAF50; color: white; border-radius: 8px; cursor: pointer; font-weight: 500; transition: all 0.3s ease; min-width: 120px;">Buy</button>
+                    <button class="property-type-tab" id="rentTab" onclick="showPropertyType('rent')" style="padding: 12px 40px; border: 2px solid #4CAF50; background: transparent; color: #4CAF50; border-radius: 8px; cursor: pointer; font-weight: 500; transition: all 0.3s ease; min-width: 120px;">Rent</button>
+                </div>
+                <!-- RENT/BUY TOGGLE END -->
+                
+                <div class="filters-section" style="display: flex; justify-content: center; margin-bottom: 30px;">
+                    <div class="filter-dropdown">
+                        <button class="filter-btn" onclick="toggleFilters()" style="padding: 12px 40px; min-width: 200px; border-radius: 8px;">
+                            🔍 Filters
+                            <span>▼</span>
+                        </button>
+                        <div class="filter-content" id="filterContent">
+                            <div class="filter-group">
+                                <label class="filter-label">Price Range</label>
+                                <select class="filter-input" id="propertyPriceFilter">
+                                    <option value="any">Any Price</option>
+                                    <option value="200-400">$200k - $400k</option>
+                                    <option value="400-600">$400k - $600k</option>
+                                    <option value="600+">$600k+</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label class="filter-label">Bedrooms</label>
+                                <select class="filter-input" id="propertyBedroomsFilter">
+                                    <option value="any">Any</option>
+                                    <option value="1">1+</option>
+                                    <option value="2">2+</option>
+                                    <option value="3">3+</option>
+                                    <option value="4">4+</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label class="filter-label">Property Type</label>
+                                <select class="filter-input" id="propertyTypeFilter">
+                                    <option value="any">All Types</option>
+                                    <option value="house">House</option>
+                                    <option value="condo">Condo</option>
+                                    <option value="townhouse">Townhouse</option>
+                                    <option value="apartment">Apartment</option>
+                                </select>
+                            </div>
+                            <div class="filter-actions">
+                                <button class="filter-apply-btn" onclick="applyPropertyFilters(event)">Apply</button>
+                                <button class="filter-clear-btn" onclick="clearPropertyFilters(event)">Clear Filters</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- BUY PROPERTIES START -->
+                <div class="property-type-content" id="buyProperties" style="display: block;">
+                <div class="properties-grid" id="mainPropertiesGrid"></div>
+                </div>
+                <!-- BUY PROPERTIES END -->
+                
+                <!-- RENT PROPERTIES START -->
+                <div class="property-type-content" id="rentProperties" style="display: none;">
+                    <div class="properties-grid">
+                        <div class="property-card" onclick="showProperty('rent1')">
+                            <img src="https://images.unsplash.com/photo-1507089947368-19c1da9775ae?w=400&h=200&fit=crop" alt="Urban Loft Rental" class="property-image">
+                            <div class="property-info">
+                                <div class="property-title">Urban Loft Rental</div>
+                                <div class="property-price">$2,200/mo</div>
+                                <div class="property-location">City Center</div>
+                                <div class="property-description">Spacious 1-bedroom loft with modern amenities and skyline views.</div>
+                                <div class="contact-actions" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e0e0e0; text-align: center;">
+                                    <button class="contact-btn whatsapp" onclick="event.stopPropagation();contactWhatsApp('Urban Loft Rental', '$2,200/mo')" style="background: #25D366; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; margin-right: 10px; font-size: 1rem; font-weight: 600; min-width: 100px;">
+                                        📱 WhatsApp
+                                    </button>
+                                    <button class="contact-btn bot" onclick="event.stopPropagation();contactBot('Urban Loft Rental')" style="background: #4CAF50; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 600; min-width: 100px;">
+                                        🤖 Bot
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="property-card" onclick="showProperty('rent2')">
+                            <img src="https://images.unsplash.com/photo-1460518451285-97b6aa326961?w=400&h=200&fit=crop" alt="Family House Rental" class="property-image">
+                            <div class="property-info">
+                                <div class="property-title">Family House Rental</div>
+                                <div class="property-price">$3,100/mo</div>
+                                <div class="property-location">Suburban Area</div>
+                                <div class="property-description">3-bedroom house with backyard, garage, and pet-friendly policy.</div>
+                                <div class="contact-actions" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e0e0e0; text-align: center;">
+                                    <button class="contact-btn whatsapp" onclick="event.stopPropagation();contactWhatsApp('Family House Rental', '$3,100/mo')" style="background: #25D366; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; margin-right: 10px; font-size: 1rem; font-weight: 600; min-width: 100px;">
+                                        📱 WhatsApp
+                                    </button>
+                                    <button class="contact-btn bot" onclick="event.stopPropagation();contactBot('Family House Rental')" style="background: #4CAF50; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 600; min-width: 100px;">
+                                        🤖 Bot
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="property-card" onclick="showProperty('rent3')">
+                            <img src="https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?w=400&h=200&fit=crop" alt="Luxury Apartment Rental" class="property-image">
+                            <div class="property-info">
+                                <div class="property-title">Luxury Apartment Rental</div>
+                                <div class="property-price">$4,500/mo</div>
+                                <div class="property-location">Downtown Highrise</div>
+                                <div class="property-description">2-bedroom luxury apartment with concierge and pool access.</div>
+                                <div class="contact-actions" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e0e0e0; text-align: center;">
+                                    <button class="contact-btn whatsapp" onclick="event.stopPropagation();contactWhatsApp('Luxury Apartment Rental', '$4,500/mo')" style="background: #25D366; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; margin-right: 10px; font-size: 1rem; font-weight: 600; min-width: 100px;">
+                                        📱 WhatsApp
+                                    </button>
+                                    <button class="contact-btn bot" onclick="event.stopPropagation();contactBot('Luxury Apartment Rental')" style="background: #4CAF50; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 600; min-width: 100px;">
+                                        🤖 Bot
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- RENT PROPERTIES END -->
+            </section>
+
+            <section class="right-section" id="propertyDetailsSection" style="display:none;"></section>
+        </main>
+    </div>
+
+    <div class="tab-content" id="furniture-tab">
+        <main class="main-content">
+            <section class="left-section">
+                <div class="filters-section">
+                    <div class="filter-dropdown">
+                        <button class="filter-btn" onclick="toggleFilters()">
+                            🔍 Filters
+                            <span>▼</span>
+                        </button>
+                        <div class="filter-content" id="filterContent">
+                            <div class="filter-group">
+                                <label class="filter-label">Category</label>
+                                <select class="filter-input">
+                                    <option>All Categories</option>
+                                    <option>Living Room</option>
+                                    <option>Bedroom</option>
+                                    <option>Kitchen</option>
+                                    <option>Office</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label class="filter-label">Price Range</label>
+                                <select class="filter-input">
+                                    <option>Any Price</option>
+                                    <option>$100 - $500</option>
+                                    <option>$500 - $1000</option>
+                                    <option>$1000+</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label class="filter-label">Style</label>
+                                <select class="filter-input">
+                                    <option>All Styles</option>
+                                    <option>Modern</option>
+                                    <option>Classic</option>
+                                    <option>Rustic</option>
+                                    <option>Minimalist</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="properties-grid">
+                    <div class="property-card active" onclick="showFurniture('furniture1')">
+                        <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=200&fit=crop" alt="Modern Sofa" class="property-image">
+                        <div class="property-info">
+                            <div class="property-title">Modern Leather Sofa</div>
+                            <div class="property-price">$1,200</div>
+                            <div class="property-location">Living Room</div>
+                            <div class="property-description">Premium leather sofa with ergonomic design and comfortable seating.</div>
+                            <div class="contact-actions" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e0e0e0; text-align: center;">
+                                <button class="contact-btn whatsapp" onclick="event.stopPropagation();contactWhatsApp('Modern Leather Sofa', '$1,200')" style="background: #25D366; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; margin-right: 10px; font-size: 1rem; font-weight: 600; min-width: 100px;">
+                                    📱 WhatsApp
+                                </button>
+                                <button class="contact-btn bot" onclick="event.stopPropagation();contactBot('Modern Leather Sofa')" style="background: #4CAF50; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 600; min-width: 100px;">
+                                    🤖 Bot
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="property-card" onclick="showFurniture('furniture2')">
+                        <img src="https://images.unsplash.com/photo-1503602642458-232111445657?w=400&h=200&fit=crop" alt="Dining Table" class="property-image">
+                        <div class="property-info">
+                            <div class="property-title">Oak Dining Table</div>
+                            <div class="property-price">$800</div>
+                            <div class="property-location">Dining Room</div>
+                            <div class="property-description">Solid oak dining table with seating for 6 people.</div>
+                            <div class="contact-actions" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e0e0e0; text-align: center;">
+                                <button class="contact-btn whatsapp" onclick="event.stopPropagation();contactWhatsApp('Oak Dining Table', '$800')" style="background: #25D366; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; margin-right: 10px; font-size: 1rem; font-weight: 600; min-width: 100px;">
+                                    📱 WhatsApp
+                                </button>
+                                <button class="contact-btn bot" onclick="event.stopPropagation();contactBot('Oak Dining Table')" style="background: #4CAF50; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 600; min-width: 100px;">
+                                    🤖 Bot
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="property-card" onclick="showFurniture('furniture3')">
+                        <img src="https://images.unsplash.com/photo-1505693314120-0d443867891c?w=400&h=200&fit=crop" alt="Bed Frame" class="property-image">
+                        <div class="property-info">
+                            <div class="property-title">Queen Bed Frame</div>
+                            <div class="property-price">$600</div>
+                            <div class="property-location">Bedroom</div>
+                            <div class="property-description">Elegant queen-size bed frame with upholstered headboard.</div>
+                            <div class="contact-actions" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e0e0e0; text-align: center;">
+                                <button class="contact-btn whatsapp" onclick="event.stopPropagation();contactWhatsApp('Queen Bed Frame', '$600')" style="background: #25D366; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; margin-right: 10px; font-size: 1rem; font-weight: 600; min-width: 100px;">
+                                    📱 WhatsApp
+                                </button>
+                                <button class="contact-btn bot" onclick="event.stopPropagation();contactBot('Queen Bed Frame')" style="background: #4CAF50; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 600; min-width: 100px;">
+                                    🤖 Bot
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="right-section">
+                <div class="property-details" id="furniture1-details">
+                    <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&h=400&fit=crop" alt="Modern Sofa" class="property-details-image">
+                    <h2 class="property-details-title">Modern Leather Sofa</h2>
+                    <div class="property-details-price">$1,200</div>
+                    <p class="property-details-description">
+                        Premium leather sofa with ergonomic design and comfortable seating. Perfect for modern living rooms, 
+                        this sofa features high-quality materials and contemporary styling that will enhance any space.
+                    </p>
+                    <div class="amenities-section">
+                        <h3 class="amenities-title">Features</h3>
+                        <div class="amenities-list">
+                            <div class="amenity-item">
+                                <span class="amenity-icon">🪑</span>
+                                <span>3-Seater</span>
+                            </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">🟤</span>
+                                <span>Brown Leather</span>
+                            </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">📏</span>
+                                <span>200cm Width</span>
+                            </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">🛡️</span>
+                                <span>5-Year Warranty</span>
+                            </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">🚚</span>
+                                <span>Free Delivery</span>
+                            </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">🔧</span>
+                                <span>Assembly Included</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="property-details" id="furniture2-details" style="display: none;">
+                    <img src="https://images.unsplash.com/photo-1503602642458-232111445657?w=600&h=400&fit=crop" alt="Dining Table" class="property-details-image">
+                    <h2 class="property-details-title">Oak Dining Table</h2>
+                    <div class="property-details-price">$800</div>
+                    <p class="property-details-description">
+                        Solid oak dining table with seating for 6 people. This beautiful piece features natural wood grain 
+                        and sturdy construction, perfect for family meals and entertaining guests.
+                    </p>
+                    <div class="amenities-section">
+                        <h3 class="amenities-title">Features</h3>
+                        <div class="amenities-list">
+                            <div class="amenity-item">
+                                <span class="amenity-icon">🪑</span>
+                                <span>Seats 6 People</span>
+                            </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">🟤</span>
+                                <span>Natural Oak</span>
+                            </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">📏</span>
+                                <span>180cm Length</span>
+                            </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">🛡️</span>
+                                <span>10-Year Warranty</span>
+                            </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">🚚</span>
+                                <span>Free Delivery</span>
+                            </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">🔧</span>
+                                <span>Assembly Included</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="property-details" id="furniture3-details" style="display: none;">
+                    <img src="https://images.unsplash.com/photo-1505693314120-0d443867891c?w=600&h=400&fit=crop" alt="Bed Frame" class="property-details-image">
+                    <h2 class="property-details-title">Queen Bed Frame</h2>
+                    <div class="property-details-price">$600</div>
+                    <p class="property-details-description">
+                        Elegant queen-size bed frame with upholstered headboard. This stylish bed frame provides comfort 
+                        and sophistication to any bedroom, with easy assembly and durable construction.
+                    </p>
+                    <div class="amenities-section">
+                        <h3 class="amenities-title">Features</h3>
+                        <div class="amenities-list">
+                            <div class="amenity-item">
+                                <span class="amenity-icon">🛏️</span>
+                                <span>Queen Size</span>
+                            </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">🟤</span>
+                                <span>Upholstered Headboard</span>
+                            </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">📏</span>
+                                <span>160cm x 200cm</span>
+                            </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">🛡️</span>
+                                <span>3-Year Warranty</span>
+                            </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">🚚</span>
+                                <span>Free Delivery</span>
+                            </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">🔧</span>
+                                <span>Assembly Included</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div class="tab-content" id="maintenance-tab">
+        <main class="main-content">
+            <section class="left-section">
+                <div class="filters-section">
+                    <div class="filter-dropdown">
+                        <button class="filter-btn" onclick="toggleFilters()">
+                            🔍 Filters
+                            <span>▼</span>
+                        </button>
+                        <div class="filter-content" id="filterContent">
+                            <div class="filter-group">
+                                <label class="filter-label">Service Type</label>
+                                <select class="filter-input">
+                                    <option>All Services</option>
+                                    <option>Plumbing</option>
+                                    <option>Electrical</option>
+                                    <option>HVAC</option>
+                                    <option>Cleaning</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label class="filter-label">Rating</label>
+                                <select class="filter-input">
+                                    <option>Any Rating</option>
+                                    <option>4+ Stars</option>
+                                    <option>4.5+ Stars</option>
+                                    <option>5 Stars</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label class="filter-label">Availability</label>
+                                <select class="filter-input">
+                                    <option>All Available</option>
+                                    <option>Available Today</option>
+                                    <option>Available This Week</option>
+                                    <option>Available Next Week</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="properties-grid">
+                    <div class="property-card active" onclick="showMaintenance('maintenance1')">
+                        <img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&h=200&fit=crop" alt="Plumber" class="property-image">
+                        <div class="property-info">
+                            <div class="property-title">Mike's Plumbing Service</div>
+                            <div class="property-price">$75/hour</div>
+                            <div class="property-location">Plumbing</div>
+                            <div class="property-description">Licensed plumber with 15+ years experience in residential repairs.</div>
+                            <div class="contact-actions" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e0e0e0; text-align: center;">
+                                <button class="contact-btn whatsapp" onclick="event.stopPropagation();contactWhatsApp('Mike\'s Plumbing Service', '$75/hour')" style="background: #25D366; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; margin-right: 10px; font-size: 1rem; font-weight: 600; min-width: 100px;">
+                                    📱 WhatsApp
+                                </button>
+                                <button class="contact-btn bot" onclick="event.stopPropagation();contactBot('Mike\'s Plumbing Service')" style="background: #4CAF50; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 600; min-width: 100px;">
+                                    🤖 Bot
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="property-card" onclick="showMaintenance('maintenance2')">
+                        <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=400&h=200&fit=crop" alt="Electrician" class="property-image">
+                        <div class="property-info">
+                            <div class="property-title">Spark Electric Co.</div>
+                            <div class="property-price">$85/hour</div>
+                            <div class="property-location">Electrical</div>
+                            <div class="property-description">Certified electrician specializing in residential electrical work.</div>
+                            <div class="contact-actions" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e0e0e0; text-align: center;">
+                                <button class="contact-btn whatsapp" onclick="event.stopPropagation();contactWhatsApp('Spark Electric Co.', '$85/hour')" style="background: #25D366; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; margin-right: 10px; font-size: 1rem; font-weight: 600; min-width: 100px;">
+                                    📱 WhatsApp
+                                </button>
+                                <button class="contact-btn bot" onclick="event.stopPropagation();contactBot('Spark Electric Co.')" style="background: #4CAF50; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 600; min-width: 100px;">
+                                    🤖 Bot
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="property-card" onclick="showMaintenance('maintenance3')">
+                        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=200&fit=crop" alt="HVAC Technician" class="property-image">
+                        <div class="property-info">
+                            <div class="property-title">Cool Breeze HVAC</div>
+                            <div class="property-price">$95/hour</div>
+                            <div class="property-location">HVAC</div>
+                            <div class="property-description">Expert HVAC technician for heating and cooling system maintenance.</div>
+                            <div class="contact-actions" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e0e0e0; text-align: center;">
+                                <button class="contact-btn whatsapp" onclick="event.stopPropagation();contactWhatsApp('Cool Breeze HVAC', '$95/hour')" style="background: #25D366; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; margin-right: 10px; font-size: 1rem; font-weight: 600; min-width: 100px;">
+                                    📱 WhatsApp
+                                </button>
+                                <button class="contact-btn bot" onclick="event.stopPropagation();contactBot('Cool Breeze HVAC')" style="background: #4CAF50; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 600; min-width: 100px;">
+                                    🤖 Bot
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="right-section">
+                <div class="property-details" id="maintenance1-details">
+                    <img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&h=400&fit=crop" alt="Plumber" class="property-details-image">
+                    <h2 class="property-details-title">Mike's Plumbing Service</h2>
+                    <div class="property-details-price">$75/hour</div>
+                    <p class="property-details-description">
+                        Licensed plumber with 15+ years experience in residential repairs. Specializing in leak repairs, 
+                        pipe installations, fixture replacements, and emergency plumbing services. Available 24/7 for urgent repairs.
+                    </p>
+                    <div class="amenities-section">
+                        <h3 class="amenities-title">Services</h3>
+                        <div class="amenities-list">
+                            <div class="amenity-item">
+                                <span class="amenity-icon">🔧</span>
+                                <span>Leak Repairs</span>
+                            </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">🚿</span>
+                                <span>Fixture Installation</span>
+                            </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">🔌</span>
+                                <span>Pipe Repairs</span>
+                            </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">🚨</span>
+                                <span>24/7 Emergency</span>
+                            </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">📋</span>
+                                <span>Licensed & Insured</span>
+                            </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">⭐</span>
+                                <span>4.8/5 Rating</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="property-details" id="maintenance2-details" style="display: none;">
+                    <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=600&h=400&fit=crop" alt="Electrician" class="property-details-image">
+                    <h2 class="property-details-title">Spark Electric Co.</h2>
+                    <div class="property-details-price">$85/hour</div>
+                    <p class="property-details-description">
+                        Certified electrician specializing in residential electrical work. Expert in electrical repairs, 
+                        installations, upgrades, and safety inspections. Committed to quality work and customer satisfaction.
+                    </p>
+                    <div class="amenities-section">
+                        <h3 class="amenities-title">Services</h3>
+                        <div class="amenities-list">
+                            <div class="amenity-item">
+                                <span class="amenity-icon">⚡</span>
+                                <span>Electrical Repairs</span>
+                            </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">💡</span>
+                                <span>Lighting Installation</span>
+                            </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">🔌</span>
+                                <span>Outlet Installation</span>
+                            </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">🛡️</span>
+                                <span>Safety Inspections</span>
+                            </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">📋</span>
+                                <span>Licensed & Insured</span>
+                            </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">⭐</span>
+                                <span>4.9/5 Rating</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="property-details" id="maintenance3-details" style="display: none;">
+                    <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=400&fit=crop" alt="HVAC Technician" class="property-details-image">
+                    <h2 class="property-details-title">Cool Breeze HVAC</h2>
+                    <div class="property-details-price">$95/hour</div>
+                    <p class="property-details-description">
+                        Expert HVAC technician for heating and cooling system maintenance. Specializing in AC repairs, 
+                        furnace maintenance, duct cleaning, and system installations. Providing reliable climate control solutions.
+                    </p>
+                    <div class="amenities-section">
+                        <h3 class="amenities-title">Services</h3>
+                        <div class="amenities-list">
+                            <div class="amenity-item">
+                                <span class="amenity-icon">❄️</span>
+                                <span>AC Repairs</span>
+                            </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">🔥</span>
+                                <span>Furnace Maintenance</span>
+                            </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">🌬️</span>
+                                <span>Duct Cleaning</span>
+                            </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">🔧</span>
+                                <span>System Installation</span>
+                            </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">📋</span>
+                                <span>Licensed & Insured</span>
+                            </div>
+                            <div class="amenity-item">
+                                <span class="amenity-icon">⭐</span>
+                                <span>4.7/5 Rating</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+
+
+    <footer class="bottom-header">
+        <div class="footer-links">
+            <a href="contact.html" class="footer-link">Contact</a>
+            <a href="about.html" class="footer-link">About Us</a>
+            <a href="faq.html" class="footer-link">FAQ</a>
+        </div>
+    </footer>
+
+    <!-- Saved Properties Modal -->
+    <div class="modal-overlay" id="savedPropertiesModal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.5);z-index:10000;align-items:center;justify-content:center;" onclick="if(event.target===this)closeSavedPropertiesModal()">
+        <div class="modal-content" style="background:white;padding:30px;border-radius:15px;max-width:700px;width:95vw;max-height:80vh;overflow-y:auto;position:relative;text-align:center;">
+            <button onclick="closeSavedPropertiesModal()" style="position:absolute;top:10px;right:10px;font-size:1.5rem;background:none;border:none;cursor:pointer;">&times;</button>
+            <h2 style="text-align:left;margin-left:5px;">Saved Properties</h2>
+            <div style="margin-bottom:20px;">
+                <button id="openCreateFolderBtn" onclick="openCreateFolderModal()" style="margin-left:8px;padding:6px 16px;border-radius:6px;background:#4CAF50;color:white;border:none;cursor:pointer;">Create new folder</button>
+            </div>
+            <div id="foldersList" style="margin-bottom:20px;"></div>
+            <div id="savedPropsList"></div>
+        </div>
+    </div>
+
+    <!-- Create Folder Modal -->
+    <div id="createFolderModal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.4);z-index:10001;align-items:center;justify-content:center;">
+        <div style="background:white;padding:24px 32px;border-radius:12px;max-width:350px;width:90vw;box-shadow:0 8px 32px rgba(0,0,0,0.18);position:relative;">
+            <button onclick="closeCreateFolderModal()" style="position:absolute;top:10px;right:10px;font-size:1.3rem;background:none;border:none;cursor:pointer;">&times;</button>
+            <h3 style="margin-bottom:16px;">Create New Folder</h3>
+            <input id="newFolderInput" type="text" placeholder="Folder name..." style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #ccc;margin-bottom:18px;">
+            <button onclick="createFolder()" style="width:100%;padding:8px 0;border-radius:6px;background:#4CAF50;color:white;border:none;font-weight:600;cursor:pointer;">Create Folder</button>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all nav tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName + '-tab').classList.add('active');
+            
+            // Add active class to clicked nav tab
+            event.currentTarget.classList.add('active');
+        }
+
+        function toggleFilters() {
+            const filterContent = document.getElementById('filterContent');
+            filterContent.classList.toggle('show');
+        }
+
+        function showProperty(propertyId) {
+            // Hide all property details
+            document.querySelectorAll('.property-details').forEach(detail => {
+                detail.style.display = 'none';
+            });
+            
+            // Remove active class from all property cards
+            document.querySelectorAll('.property-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            
+            // Show selected property details
+            document.getElementById(propertyId + '-details').style.display = 'block';
+            
+            // Add active class to clicked property card
+            event.currentTarget.classList.add('active');
+        }
+
+        function showFurniture(furnitureId) {
+            // Hide all furniture details
+            document.querySelectorAll('.property-details').forEach(detail => {
+                detail.style.display = 'none';
+            });
+            
+            // Remove active class from all furniture cards
+            document.querySelectorAll('.property-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            
+            // Show selected furniture details
+            document.getElementById(furnitureId + '-details').style.display = 'block';
+            
+            // Add active class to clicked furniture card
+            event.currentTarget.classList.add('active');
+        }
+
+        function showMaintenance(maintenanceId) {
+            // Hide all maintenance details
+            document.querySelectorAll('.property-details').forEach(detail => {
+                detail.style.display = 'none';
+            });
+            
+            // Remove active class from all maintenance cards
+            document.querySelectorAll('.property-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            
+            // Show selected maintenance details
+            document.getElementById(maintenanceId + '-details').style.display = 'block';
+            
+            // Add active class to clicked maintenance card
+            event.currentTarget.classList.add('active');
+        }
+
+        // Close filter dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const filterDropdown = document.querySelector('.filter-dropdown');
+            const filterContent = document.getElementById('filterContent');
+            
+            if (!filterDropdown.contains(event.target)) {
+                filterContent.classList.remove('show');
+            }
+        });
+
+        function applyPropertyFilters(event) {
+            event.stopPropagation();
+            const price = document.getElementById('propertyPriceFilter').value;
+            const bedrooms = document.getElementById('propertyBedroomsFilter').value;
+            const type = document.getElementById('propertyTypeFilter').value;
+            // Property data for filtering
+            const propertyData = [
+                {
+                    id: 'property1',
+                    price: 450,
+                    bedrooms: 2,
+                    type: 'condo',
+                },
+                {
+                    id: 'property2',
+                    price: 675,
+                    bedrooms: 4,
+                    type: 'house',
+                },
+                {
+                    id: 'property3',
+                    price: 1200,
+                    bedrooms: 3,
+                    type: 'penthouse',
+                },
+            ];
+            // Filtering logic
+            document.querySelectorAll('#properties-tab .property-card').forEach((card, idx) => {
+                const data = propertyData[idx];
+                let show = true;
+                // Price filter
+                if (price !== 'any') {
+                    if (price === '200-400' && !(data.price >= 200 && data.price <= 400)) show = false;
+                    if (price === '400-600' && !(data.price > 400 && data.price <= 600)) show = false;
+                    if (price === '600+' && !(data.price > 600)) show = false;
+                }
+                // Bedrooms filter
+                if (bedrooms !== 'any' && data.bedrooms < parseInt(bedrooms)) show = false;
+                // Type filter
+                if (type !== 'any') {
+                    if (type === 'penthouse') {
+                        if (data.type !== 'penthouse') show = false;
+                    } else if (data.type !== type) show = false;
+                }
+                card.style.display = show ? '' : 'none';
+            });
+            // Hide details if the selected card is hidden
+            const activeCard = document.querySelector('#properties-tab .property-card.active');
+            if (activeCard && activeCard.style.display === 'none') {
+                document.querySelectorAll('#properties-tab .property-details').forEach(d => d.style.display = 'none');
+                document.querySelectorAll('#properties-tab .property-card').forEach(c => c.classList.remove('active'));
+            }
+            // Close filter dropdown
+            document.getElementById('filterContent').classList.remove('show');
+        }
+
+        function clearPropertyFilters(event) {
+            event.stopPropagation();
+            document.getElementById('propertyPriceFilter').value = 'any';
+            document.getElementById('propertyBedroomsFilter').value = 'any';
+            document.getElementById('propertyTypeFilter').value = 'any';
+            // Show all property cards
+            document.querySelectorAll('#properties-tab .property-card').forEach(card => {
+                card.style.display = '';
+            });
+            // Do NOT close the filter dropdown here
+        }
+
+        function searchProperties(searchTerm) {
+            const searchLower = searchTerm.toLowerCase().trim();
+            
+            // Property data for searching
+            const propertyData = [
+                {
+                    id: 'property1',
+                    title: 'Modern Downtown Condo',
+                    location: 'Downtown District',
+                    description: 'Stunning 2-bedroom condo with floor-to-ceiling windows and premium finishes.',
+                    price: '$450,000',
+                    type: 'condo'
+                },
+                {
+                    id: 'property2',
+                    title: 'Family Home with Garden',
+                    location: 'Suburban Heights',
+                    description: 'Beautiful 4-bedroom home with large backyard garden and updated kitchen.',
+                    price: '$675,000',
+                    type: 'house'
+                },
+                {
+                    id: 'property3',
+                    title: 'Luxury Penthouse',
+                    location: 'City Center',
+                    description: 'Exclusive penthouse with panoramic city views and rooftop terrace.',
+                    price: '$1,200,000',
+                    type: 'penthouse'
+                }
+            ];
+
+            // If search is empty, show all properties
+            if (searchTerm === '') {
+                document.querySelectorAll('#properties-tab .property-card').forEach(card => {
+                    card.style.display = '';
+                });
+                return;
+            }
+
+            // Search through properties
+            document.querySelectorAll('#properties-tab .property-card').forEach((card, index) => {
+                const data = propertyData[index];
+                const searchableText = `${data.title} ${data.location} ${data.description} ${data.price} ${data.type}`.toLowerCase();
+                
+                if (searchableText.includes(searchLower)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Hide details if the selected card is hidden
+            const activeCard = document.querySelector('#properties-tab .property-card.active');
+            if (activeCard && activeCard.style.display === 'none') {
+                document.querySelectorAll('#properties-tab .property-details').forEach(d => d.style.display = 'none');
+                document.querySelectorAll('#properties-tab .property-card').forEach(c => c.classList.remove('active'));
+            }
+        }
+
+        // RENT/BUY TAB SWITCHING
+        function showPropertyType(type) {
+            // Toggle tab button active state
+            document.getElementById('buyTab').classList.remove('active');
+            document.getElementById('rentTab').classList.remove('active');
+            document.getElementById(type + 'Tab').classList.add('active');
+            
+            // Update button styles
+            const buyBtn = document.getElementById('buyTab');
+            const rentBtn = document.getElementById('rentTab');
+            
+            if (type === 'buy') {
+                buyBtn.style.background = '#4CAF50';
+                buyBtn.style.color = 'white';
+                rentBtn.style.background = 'transparent';
+                rentBtn.style.color = '#4CAF50';
+            } else {
+                rentBtn.style.background = '#4CAF50';
+                rentBtn.style.color = 'white';
+                buyBtn.style.background = 'transparent';
+                buyBtn.style.color = '#4CAF50';
+            }
+            
+            // Toggle property grids
+            document.getElementById('buyProperties').style.display = (type === 'buy') ? 'block' : 'none';
+            document.getElementById('rentProperties').style.display = (type === 'rent') ? 'block' : 'none';
+            
+            // Hide all property details
+            document.querySelectorAll('.property-details').forEach(detail => {
+                detail.style.display = 'none';
+            });
+            
+            // Remove active class from all property cards
+            document.querySelectorAll('.property-card').forEach(card => {
+                card.classList.remove('active');
+            });
+        }
+
+        // --- Bookmark/Saved Properties Logic ---
+        let savedProperties = JSON.parse(localStorage.getItem('savedProperties13')||'{}');
+        let folders = JSON.parse(localStorage.getItem('savedFolders13')||'{}');
+        let currentFolder = 'all';
+        if (!folders['all']) folders['all'] = {name:'All',props:[]};
+
+        function toggleBookmark(id, title, price, location, imageUrl) {
+            // Instead of saving immediately, open the modal and let the user pick a folder
+            // Store the property info in a temporary variable
+            window.pendingSaveProperty = {id, title, price, location, imageUrl};
+            openSavedPropertiesModal(true); // true = show folder selection for saving
+        }
+        function openSavedPropertiesModal(selectFolderMode) {
+            document.getElementById('savedPropertiesModal').style.display='flex';
+            renderFolders(selectFolderMode);
+            renderSavedProps();
+            if (selectFolderMode) {
+                // Show a prompt to select a folder to save the property
+                const foldersList = document.getElementById('foldersList');
+                const prompt = document.createElement('div');
+                prompt.id = 'savePrompt';
+                prompt.style = 'margin-bottom:16px;color:#333;font-weight:600;';
+                prompt.innerHTML = 'Select a folder to save this property:';
+                foldersList.prepend(prompt);
+            } else {
+                const oldPrompt = document.getElementById('savePrompt');
+                if (oldPrompt) oldPrompt.remove();
+            }
+        }
+        function closeSavedPropertiesModal() {
+            document.getElementById('savedPropertiesModal').style.display='none';
+        }
+        function createFolder() {
+            const input = document.getElementById('newFolderInput');
+            const name = input.value.trim();
+            if (!name) return;
+            const id = name.toLowerCase().replace(/\s+/g,'-');
+            if (!folders[id]) folders[id]={name:name,props:[]};
+            localStorage.setItem('savedFolders13',JSON.stringify(folders));
+            renderFolders();
+            input.value='';
+            closeCreateFolderModal();
+        }
+        function openCreateFolderModal() {
+            document.getElementById('createFolderModal').style.display = 'flex';
+            setTimeout(()=>{
+                document.getElementById('newFolderInput').focus();
+            }, 100);
+        }
+        function closeCreateFolderModal() {
+            document.getElementById('createFolderModal').style.display = 'none';
+        }
+        // Close create folder modal when clicking outside
+        document.addEventListener('mousedown', function(event) {
+            const modal = document.getElementById('createFolderModal');
+            if (modal.style.display !== 'none' && event.target === modal) {
+                closeCreateFolderModal();
+            }
+        });
+        function removeFolder(id) {
+            if (id==='all') return;
+            if (confirm('Delete folder and remove its properties?')) {
+                folders[id].props.forEach(pid=>{ delete savedProperties[pid]; });
+                delete folders[id];
+                localStorage.setItem('savedFolders13',JSON.stringify(folders));
+                localStorage.setItem('savedProperties13',JSON.stringify(savedProperties));
+                renderFolders();
+                renderSavedProps();
+            }
+        }
+        function renderFolders(selectFolderMode) {
+            let html = '';
+            Object.keys(folders).forEach(fid=>{
+                html += `<span style="display:inline-block;margin:0 8px 8px 0;padding:6px 12px;border-radius:6px;background:${currentFolder===fid?'#4CAF50':'#eee'};color:${currentFolder===fid?'white':'#333'};cursor:pointer;" onclick="${selectFolderMode ? `savePendingPropertyToFolder('${fid}')` : `currentFolder='${fid}';renderFolders();renderSavedProps();`}">${folders[fid].name}`+(fid!=='all'?` <button onclick=\"event.stopPropagation();removeFolder('${fid}')\" style=\"margin-left:4px;color:#c00;background:none;border:none;cursor:pointer;\">&times;</button>`:'')+`</span>`;
+            });
+            document.getElementById('foldersList').innerHTML = html;
+        }
+        function renderSavedProps() {
+            let props = [];
+            if (currentFolder==='all') {
+                Object.values(folders).forEach(f=>{ props=props.concat(f.props); });
+                props = [...new Set(props)];
+            } else {
+                props = folders[currentFolder].props;
+            }
+            let html = '';
+            if (!props.length) html = '<div style="color:#888;text-align:center;padding:30px;">No saved properties.</div>';
+            else html = `<div style='display:grid;grid-template-columns:repeat(3,1fr);gap:16px;'>` + props.map(pid=>{
+                const p = savedProperties[pid];
+                if (!p) return '';
+                let imgTag = '';
+                if (p.imageUrl) {
+                    imgTag = `<img src='${p.imageUrl}' style='width:100%;height:80px;object-fit:cover;border-radius:8px 8px 0 0;'>`;
+                } else {
+                    imgTag = `<div style='width:100%;height:80px;background:#eee;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:1.5rem;border-radius:8px 8px 0 0;'>No Image</div>`;
+                }
+                return `<div style=\"background:white;border:1px solid #eee;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.06);overflow:hidden;display:flex;flex-direction:column;align-items:stretch;\">
+                    ${imgTag}
+                    <div style=\"padding:8px 10px;display:flex;flex-direction:column;align-items:flex-start;\">
+                        <div style=\"font-weight:600;font-size:1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;\">${p.title}</div>
+                        <div style=\"color:#4CAF50;font-size:0.95rem;font-weight:500;\">${p.price||''}</div>
+                        <div style=\"color:#666;font-size:0.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;\">${p.location||''}</div>
+                    </div>
+                    <button onclick=\"removeSavedProp('${pid}')\" style=\"background:#c00;color:white;border:none;border-radius:0 0 8px 8px;padding:6px 0;cursor:pointer;font-size:0.95rem;\">Remove</button>
+                </div>`;
+            }).join('') + `</div>`;
+            document.getElementById('savedPropsList').innerHTML = html;
+        }
+        function removeSavedProp(pid) {
+            const folder = savedProperties[pid].folder;
+            folders[folder].props = folders[folder].props.filter(id=>id!==pid);
+            delete savedProperties[pid];
+            localStorage.setItem('savedProperties13',JSON.stringify(savedProperties));
+            localStorage.setItem('savedFolders13',JSON.stringify(folders));
+            renderFolders();
+            renderSavedProps();
+            updateBookmarkButtons();
+        }
+        function savePendingPropertyToFolder(folderId) {
+            const p = window.pendingSaveProperty;
+            if (!p) return;
+            if (!folders[folderId]) folders[folderId] = {name:folderId,props:[]};
+            savedProperties[p.id] = {...p, folder: folderId};
+            folders[folderId].props.push(p.id);
+            localStorage.setItem('savedProperties13',JSON.stringify(savedProperties));
+            localStorage.setItem('savedFolders13',JSON.stringify(folders));
+            window.pendingSaveProperty = null;
+            openSavedPropertiesModal(); // reopen in normal mode
+            updateBookmarkButtons();
+        }
+        function updateBookmarkButtons() {
+            // Update bookmark button states based on saved properties
+            const savedProps = JSON.parse(localStorage.getItem('savedProperties13') || '{}');
+            document.querySelectorAll('.bookmark-btn').forEach(btn => {
+                const propertyId = btn.getAttribute('onclick')?.match(/toggleBookmark\('([^']+)'/)?.[1];
+                if (propertyId && savedProps[propertyId]) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+        document.addEventListener('DOMContentLoaded',()=>{
+            updateBookmarkButtons();
+        });
+
+        // Load and apply saved theme
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme') || 'Light';
+            console.log('Loading saved theme:', savedTheme);
+            applyTheme(savedTheme);
+            checkAuthStatus();
+        });
+
+        function checkAuthStatus() {
+            const authToken = localStorage.getItem('authToken');
+            const authButtons = document.querySelector('.auth-buttons');
+            
+            if (authToken) {
+                // User is logged in - hide login/signup, show logout
+                authButtons.innerHTML = `
+                    <button class="btn logout-btn" onclick="logout()">Logout</button>
+                    <div style="position:relative;display:inline-block;">
+                        <button class="hamburger-btn" id="hamburgerMenuBtn" style="background:none;border:none;cursor:pointer;padding:10px 12px;display:flex;flex-direction:column;gap:4px;justify-content:center;align-items:center;">
+                            <span style="display:block;width:24px;height:3px;background:#fff;border-radius:2px;"></span>
+                            <span style="display:block;width:24px;height:3px;background:#fff;border-radius:2px;"></span>
+                            <span style="display:block;width:24px;height:3px;background:#fff;border-radius:2px;"></span>
+                        </button>
+                        <div id="hamburgerDropdown" style="display:none;position:absolute;right:0;top:40px;background:white;box-shadow:0 4px 16px rgba(0,0,0,0.15);border-radius:8px;min-width:160px;z-index:10001;">
+                            <a href="myaccount.html" style="display:block;padding:12px 20px;text-decoration:none;color:#333;font-weight:500;border-bottom:1px solid #eee;">My Account</a>
+                            <a href="myproperties.html" style="display:block;padding:12px 20px;text-decoration:none;color:#333;font-weight:500;border-bottom:1px solid #eee;">My Properties</a>
+                            <a href="settings.html" style="display:block;padding:12px 20px;text-decoration:none;color:#333;font-weight:500;">Settings</a>
+                        </div>
+                    </div>
+                `;
+                // Re-attach hamburger menu event listeners
+                attachHamburgerListeners();
+            } else {
+                // User is not logged in - show login/signup
+                authButtons.innerHTML = `
+                    <a href="login.html" class="btn">Login</a>
+                    <a href="signup.html" class="btn">Sign Up</a>
+                    <div style="position:relative;display:inline-block;">
+                        <button class="hamburger-btn" id="hamburgerMenuBtn" style="background:none;border:none;cursor:pointer;padding:10px 12px;display:flex;flex-direction:column;gap:4px;justify-content:center;align-items:center;">
+                            <span style="display:block;width:24px;height:3px;background:#fff;border-radius:2px;"></span>
+                            <span style="display:block;width:24px;height:3px;background:#fff;border-radius:2px;"></span>
+                            <span style="display:block;width:24px;height:3px;background:#fff;border-radius:2px;"></span>
+                        </button>
+                        <div id="hamburgerDropdown" style="display:none;position:absolute;right:0;top:40px;background:white;box-shadow:0 4px 16px rgba(0,0,0,0.15);border-radius:8px;min-width:160px;z-index:10001;">
+                            <a href="myaccount.html" style="display:block;padding:12px 20px;text-decoration:none;color:#333;font-weight:500;border-bottom:1px solid #eee;">My Account</a>
+                            <a href="myproperties.html" style="display:block;padding:12px 20px;text-decoration:none;color:#333;font-weight:500;border-bottom:1px solid #eee;">My Properties</a>
+                            <a href="settings.html" style="display:block;padding:12px 20px;text-decoration:none;color:#333;font-weight:500;">Settings</a>
+                        </div>
+                    </div>
+                `;
+                // Re-attach hamburger menu event listeners
+                attachHamburgerListeners();
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('authToken');
+            checkAuthStatus();
+            // Redirect to home page
+            window.location.href = 'index.html';
+        }
+
+        function attachHamburgerListeners() {
+            const hamburgerBtn = document.getElementById('hamburgerMenuBtn');
+            if (hamburgerBtn) {
+                hamburgerBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    var dropdown = document.getElementById('hamburgerDropdown');
+                    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+                });
+            }
+            
+            document.addEventListener('click', function(e) {
+                var dropdown = document.getElementById('hamburgerDropdown');
+                if (dropdown && dropdown.style.display === 'block') {
+                    dropdown.style.display = 'none';
+                }
+            });
+        }
+
+        function applyTheme(theme) {
+            console.log('Applying theme on main page:', theme);
+            if (theme === 'Dark') {
+                document.body.classList.add('dark-theme');
+                console.log('Dark theme applied to main page');
+            } else {
+                document.body.classList.remove('dark-theme');
+                console.log('Light theme applied to main page');
+            }
+        }
+
+        // Hamburger menu listeners are now handled by attachHamburgerListeners()
+
+        function getProperties() {
+            return JSON.parse(localStorage.getItem('myProperties') || '[]');
+        }
+        function renderMainProperties() {
+            const props = getProperties();
+            const grid = document.getElementById('mainPropertiesGrid');
+            grid.innerHTML = '';
+            if (props.length === 0) {
+                grid.innerHTML = '<div style="color:#888;text-align:center;padding:30px;">No properties listed yet.</div>';
+                document.getElementById('propertyDetailsSection').style.display = 'none';
+                return;
+            }
+            props.forEach((p, idx) => {
+                let imgTag = '';
+                if (p.images && p.images.length > 0) {
+                    imgTag = `<img src="${p.images[0]}" class='property-image' alt='Property Image'>`;
+                } else {
+                    imgTag = `<div class='property-image' style='background:#eee;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:2rem;'>No Image</div>`;
+                }
+                grid.innerHTML += `<div class='property-card' onclick='showPropertyDetail(${idx})'>
+                    <button class='bookmark-btn' onclick="event.stopPropagation();toggleBookmark('property${idx}', '${p.title.replace(/'/g, "\'")}', '$${p.price}', '${p.address.replace(/'/g, "\'")}', '${p.images && p.images[0] ? p.images[0] : ''}')">🔖</button>
+                    ${imgTag}
+                    <div class='property-info'>
+                        <div class='property-title'>${p.title}</div>
+                        <div class='property-price'>$${p.price}</div>
+                        <div class='property-location'>${p.address}</div>
+                        <div class='property-description'>${p.description}</div>
+                        <div style='color:#666;font-size:0.9em;margin-top:8px;margin-bottom:15px;'>${p.bedrooms} bed &bull; ${p.bathrooms} bath &bull; ${p.type}</div>
+                        <div class='contact-actions' style='margin-top: 15px; padding-top: 15px; border-top: 1px solid #e0e0e0; text-align: center;'>
+                            <button class='contact-btn whatsapp' onclick="event.stopPropagation();contactWhatsApp('${p.title.replace(/'/g, "\'")}', '$${p.price}')" style='background: #25D366; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; margin-right: 10px; font-size: 1rem; font-weight: 600; min-width: 100px;'>
+                                📱 WhatsApp
+                            </button>
+                            <button class='contact-btn bot' onclick="event.stopPropagation();contactBot('${p.title.replace(/'/g, "\'")}')" style='background: #4CAF50; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 600; min-width: 100px;'>
+                                🤖 Bot
+                            </button>
+                        </div>
+                    </div>
+                </div>`;
+            });
+        }
+        function showPropertyDetail(idx) {
+            const props = getProperties();
+            const p = props[idx];
+            if (!p) return;
+            let imgTag = '';
+            if (p.images && p.images.length > 0) {
+                imgTag = `<img src=\"${p.images[0]}\" class='property-details-image' alt='Property Image'>`;
+            } else {
+                imgTag = `<div class='property-details-image' style='background:#eee;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:2rem;height:300px;'>No Image</div>`;
+            }
+            document.getElementById('propertyDetailsSection').innerHTML = `
+                <div style='width:100%;display:flex;justify-content:flex-end;margin-bottom:8px;'>
+                  <button onclick='closePropertyDetail()' style='font-size:1.5rem;background:none;border:none;color:#888;z-index:10;cursor:pointer;width:32px;height:32px;line-height:32px;text-align:center;border-radius:50%;transition:background 0.2s;'><span style='display:inline-block;width:100%;height:100%;'>×</span></button>
+                </div>
+                ${imgTag}
+                <h2 class='property-details-title'>${p.title}</h2>
+                <div class='property-details-price'>$${p.price}</div>
+                <p class='property-details-description'>${p.description}</p>
+                <div class='amenities-section'>
+                    <h3 class='amenities-title'>Details</h3>
+                    <div class='amenities-list'>
+                        <div class='amenity-item'><span class='amenity-icon'>🛏️</span><span>${p.bedrooms} Bedrooms</span></div>
+                        <div class='amenity-item'><span class='amenity-icon'>🚿</span><span>${p.bathrooms} Bathrooms</span></div>
+                        <div class='amenity-item'><span class='amenity-icon'>🏷️</span><span>${p.type}</span></div>
+                        <div class='amenity-item'><span class='amenity-icon'>📍</span><span>${p.address}</span></div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('propertyDetailsSection').style.display = 'block';
+        }
+        function closePropertyDetail() {
+            document.getElementById('propertyDetailsSection').style.display = 'none';
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            // ... existing code ...
+            renderMainProperties();
+        });
+
+        // Contact Functions
+        function contactWhatsApp(propertyTitle = '', propertyPrice = '') {
+            const phoneNumber = '+1234567890'; // Replace with your actual WhatsApp number
+            let message = 'Hello! I need help with a property.';
+            if (propertyTitle && propertyPrice) {
+                message = `Hello! I'm interested in the property: ${propertyTitle} for ${propertyPrice}. Can you provide more information?`;
+            }
+            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        function contactBot(propertyTitle = '') {
+            let message = 'Chat bot feature coming soon! This will connect you to our AI assistant for help with property search and questions.';
+            if (propertyTitle) {
+                message = `Chat bot feature coming soon! This will connect you to our AI assistant for help with the property: ${propertyTitle}.`;
+            }
+            alert(message);
+        }
+    </script>
+</body>
+</html> 

@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - HOUSING REAL ESTATE</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-header {
+            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+            padding: 20px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            gap: 40px;
+        }
+
+        .logo {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: 2px solid white;
+            background: transparent;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .btn:hover {
+            background: white;
+            color: #4CAF50;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            background: #f8f9fa;
+        }
+
+        .left-section {
+            flex: 1;
+            padding: 30px;
+            background: white;
+            border-right: 1px solid #e0e0e0;
+        }
+
+        .right-section {
+            flex: 1;
+            padding: 30px;
+            background: white;
+        }
+
+        .settings-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .settings-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-label {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .setting-description {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #4CAF50;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .select-dropdown {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: white;
+            color: #333;
+            font-size: 0.9rem;
+        }
+
+        .save-btn {
+            padding: 12px 24px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .save-btn:hover {
+            background: #2E7D32;
+        }
+
+        /* Dark theme styles */
+        body.dark-theme {
+            background: #1a1a1a;
+            color: #ffffff;
+        }
+
+        body.dark-theme .top-header {
+            background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+        }
+
+        body.dark-theme .main-content {
+            background: #2d2d2d;
+        }
+
+        body.dark-theme .left-section,
+        body.dark-theme .right-section {
+            background: #333333;
+            border-color: #444444;
+        }
+
+        body.dark-theme .settings-card {
+            background: #333333;
+            border-color: #444444;
+            color: #ffffff;
+        }
+
+        body.dark-theme .setting-label {
+            color: #ffffff;
+        }
+
+        body.dark-theme .setting-description {
+            color: #cccccc;
+        }
+
+        body.dark-theme .select-dropdown {
+            background: #444444;
+            border-color: #555555;
+            color: #ffffff;
+        }
+
+        body.dark-theme .bottom-header {
+            background: linear-gradient(135deg, #1B5E20 0%, #0d2e0f 100%);
+        }
+
+        body.dark-theme .section-title {
+            color: #ffffff;
+        }
+
+        body.dark-theme .setting-item {
+            border-color: #444444;
+        }
+
+        .bottom-header {
+            background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+            padding: 30px;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+        }
+
+        .footer-link {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer-link:hover {
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .left-section, .right-section {
+                flex: none;
+            }
+            
+            .top-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+
+        .back-arrow {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-decoration: none;
+            margin-right: 32px;
+            margin-left: 0;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .back-arrow:hover {
+            text-decoration: underline;
+            background: none !important;
+        }
+    </style>
+</head>
+<body>
+    <header class="top-header" style="position:relative; justify-content:center;">
+        <a href="index.html" class="back-arrow" style="position:absolute; left:20px; color: white; font-size: 2.5rem; font-weight: bold; text-decoration: none; line-height: 1; display: flex; align-items: center;">&#8592;</a>
+        <a href="index.html" class="logo">PREMIUM REAL ESTATE</a>
+
+    </header>
+
+    <main class="main-content">
+        <section class="left-section">
+            <div class="settings-section">
+                <h2 class="section-title">Notification Settings</h2>
+                
+                <div class="settings-card">
+                    <div class="setting-item">
+                        <div>
+                            <div class="setting-label">Email Notifications</div>
+                            <div class="setting-description">Receive updates about new properties</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div>
+                            <div class="setting-label">SMS Notifications</div>
+                            <div class="setting-description">Get text messages for urgent updates</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div>
+                            <div class="setting-label">Price Alerts</div>
+                            <div class="setting-description">Notify when saved properties change price</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="contact-actions" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+                        <button class="contact-btn whatsapp" onclick="contactWhatsApp()" style="background: #25D366; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin-right: 10px; font-weight: 500;">
+                            📱 Contact through WhatsApp
+                        </button>
+                        <button class="contact-btn bot" onclick="contactBot()" style="background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">
+                            🤖 Contact Bot
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="right-section">
+            <div class="settings-section">
+                <h2 class="section-title">Preferences</h2>
+                
+                <div class="settings-card">
+                    <div class="setting-item">
+                        <div>
+                            <div class="setting-label">Language</div>
+                            <div class="setting-description">Choose your preferred language</div>
+                        </div>
+                        <select class="select-dropdown">
+                            <option>English</option>
+                            <option>Spanish</option>
+                            <option>French</option>
+                        </select>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div>
+                            <div class="setting-label">Currency</div>
+                            <div class="setting-description">Display prices in your preferred currency</div>
+                        </div>
+                        <select class="select-dropdown">
+                            <option>USD ($)</option>
+                            <option>EUR (€)</option>
+                            <option>GBP (£)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div>
+                            <div class="setting-label">Theme</div>
+                            <div class="setting-description">Choose your preferred color theme</div>
+                        </div>
+                        <select class="select-dropdown">
+                            <option>Light</option>
+                            <option>Dark</option>
+                            <option>Auto</option>
+                        </select>
+                    </div>
+                    
+                    <button class="save-btn">Save Settings</button>
+                    
+                    <div class="contact-actions" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+                        <button class="contact-btn whatsapp" onclick="contactWhatsApp()" style="background: #25D366; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin-right: 10px; font-weight: 500;">
+                            📱 Contact through WhatsApp
+                        </button>
+                        <button class="contact-btn bot" onclick="contactBot()" style="background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">
+                            🤖 Contact Bot
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bottom-header">
+        <div class="footer-links">
+            <a href="contact.html" class="footer-link">Contact</a>
+            <a href="about.html" class="footer-link">About Us</a>
+            <a href="faq.html" class="footer-link">FAQ</a>
+        </div>
+    </footer>
+
+    <script>
+        // Load saved settings on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSettings();
+        });
+
+        function loadSettings() {
+            // Load theme
+            const savedTheme = localStorage.getItem('theme') || 'Light';
+            const themeSelect = document.querySelectorAll('select')[2]; // Theme is the third select
+            themeSelect.value = savedTheme;
+            applyTheme(savedTheme);
+
+            // Load other settings
+            const emailNotifications = localStorage.getItem('emailNotifications') !== 'false';
+            const smsNotifications = localStorage.getItem('smsNotifications') === 'true';
+            const priceAlerts = localStorage.getItem('priceAlerts') !== 'false';
+            const language = localStorage.getItem('language') || 'English';
+            const currency = localStorage.getItem('currency') || 'USD ($)';
+
+            document.querySelector('input[type="checkbox"]').checked = emailNotifications;
+            document.querySelectorAll('input[type="checkbox"]')[1].checked = smsNotifications;
+            document.querySelectorAll('input[type="checkbox"]')[2].checked = priceAlerts;
+            document.querySelectorAll('select')[0].value = language;
+            document.querySelectorAll('select')[1].value = currency;
+        }
+
+        function applyTheme(theme) {
+            console.log('Applying theme:', theme);
+            if (theme === 'Dark') {
+                document.body.classList.add('dark-theme');
+                console.log('Dark theme applied');
+            } else {
+                document.body.classList.remove('dark-theme');
+                console.log('Light theme applied');
+            }
+        }
+
+        // Handle theme change
+        document.querySelectorAll('select')[2].addEventListener('change', function() {
+            const selectedTheme = this.value;
+            applyTheme(selectedTheme);
+        });
+
+        // Save Settings button functionality
+        document.querySelector('.save-btn').addEventListener('click', function() {
+            const theme = document.querySelectorAll('select')[2].value;
+            const emailNotifications = document.querySelector('input[type="checkbox"]').checked;
+            const smsNotifications = document.querySelectorAll('input[type="checkbox"]')[1].checked;
+            const priceAlerts = document.querySelectorAll('input[type="checkbox"]')[2].checked;
+            const language = document.querySelectorAll('select')[0].value;
+            const currency = document.querySelectorAll('select')[1].value;
+
+            // Save to localStorage
+            localStorage.setItem('theme', theme);
+            localStorage.setItem('emailNotifications', emailNotifications);
+            localStorage.setItem('smsNotifications', smsNotifications);
+            localStorage.setItem('priceAlerts', priceAlerts);
+            localStorage.setItem('language', language);
+            localStorage.setItem('currency', currency);
+
+            // Apply theme immediately
+            applyTheme(theme);
+
+            // Show success message
+            alert('Settings saved successfully!');
+        });
+
+        // Contact Functions
+        function contactWhatsApp() {
+            const phoneNumber = '+1234567890'; // Replace with your actual WhatsApp number
+            const message = 'Hello! I need help with my real estate settings.';
+            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        function contactBot() {
+            // You can customize this to open a chat bot interface
+            alert('Chat bot feature coming soon! This will connect you to our AI assistant for help with your settings.');
+        }
+    </script>
+</body>
+</html> 
