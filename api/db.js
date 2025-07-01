@@ -6,16 +6,24 @@ const mongoose = require('mongoose');
 // MongoDB connection string - you'll replace this with your actual connection string
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://your-username:your-password@your-cluster.mongodb.net/modernsite?retryWrites=true&w=majority';
 
+console.log('MongoDB URI configured:', !!process.env.MONGODB_URI);
+
 // Connect to MongoDB
 mongoose.connect(MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+}).then(() => {
+  console.log('Connected to MongoDB successfully!');
+}).catch((error) => {
+  console.error('MongoDB connection error:', error.message);
 });
 
 const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+db.on('error', (error) => {
+  console.error('MongoDB connection error:', error);
+});
 db.once('open', () => {
-  console.log('Connected to MongoDB successfully!');
+  console.log('MongoDB connection opened!');
 });
 
 // User Schema

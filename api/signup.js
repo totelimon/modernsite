@@ -20,18 +20,22 @@ module.exports = async (req, res) => {
   }
 
   try {
+    console.log('Signup request received:', { body: req.body });
+    
     const { username, email, password } = req.body;
     
     if (!username || !email || !password) {
       return res.status(400).json({ error: 'All fields required.' });
     }
 
+    console.log('Checking for existing user...');
     // Check if email already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ error: 'Email already registered.' });
     }
 
+    console.log('Creating new user...');
     // Hash password and create user
     const hash = bcrypt.hashSync(password, 10);
     const newUser = new User({
@@ -41,6 +45,7 @@ module.exports = async (req, res) => {
     });
 
     await newUser.save();
+    console.log('User saved successfully:', newUser._id);
     
     // Generate JWT token
     const token = jwt.sign({ id: newUser._id, email }, SECRET, { expiresIn: '7d' });
@@ -48,6 +53,9 @@ module.exports = async (req, res) => {
     
   } catch (error) {
     console.error('Signup error:', error);
-    res.status(500).json({ error: 'Server error during signup.' });
+    if (error.name === 'MongoError' && error.code === 11000) {
+      return res.status(400).json({ error: 'Email already registered.' });
+    }
+    res.status(500).json({ error: 'Server error during signup: ' + error.message });
   }
 }; 
