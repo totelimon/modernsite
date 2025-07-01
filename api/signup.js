@@ -1,8 +1,10 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { User } = require('./db');
 
 const SECRET = 'REPLACE_THIS_WITH_A_SECRET_KEY';
+
+// Simple in-memory storage for testing
+let users = [];
 
 module.exports = async (req, res) => {
   // Enable CORS
@@ -20,7 +22,7 @@ module.exports = async (req, res) => {
   }
 
   try {
-    console.log('Signup request received:', { body: req.body });
+    console.log('Signup request received');
     
     const { username, email, password } = req.body;
     
@@ -28,34 +30,31 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: 'All fields required.' });
     }
 
-    console.log('Checking for existing user...');
     // Check if email already exists
-    const existingUser = await User.findOne({ email });
+    const existingUser = users.find(user => user.email === email);
     if (existingUser) {
       return res.status(400).json({ error: 'Email already registered.' });
     }
 
-    console.log('Creating new user...');
     // Hash password and create user
     const hash = bcrypt.hashSync(password, 10);
-    const newUser = new User({
+    const newUser = {
+      id: users.length + 1,
       username,
       email,
-      password_hash: hash
-    });
-
-    await newUser.save();
-    console.log('User saved successfully:', newUser._id);
+      password_hash: hash,
+      created_at: new Date()
+    };
+    
+    users.push(newUser);
+    console.log('User created:', newUser.id);
     
     // Generate JWT token
-    const token = jwt.sign({ id: newUser._id, email }, SECRET, { expiresIn: '7d' });
+    const token = jwt.sign({ id: newUser.id, email }, SECRET, { expiresIn: '7d' });
     res.json({ token });
     
   } catch (error) {
     console.error('Signup error:', error);
-    if (error.name === 'MongoError' && error.code === 11000) {
-      return res.status(400).json({ error: 'Email already registered.' });
-    }
     res.status(500).json({ error: 'Server error during signup: ' + error.message });
   }
 }; 

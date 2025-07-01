@@ -13,7 +13,7 @@ A modern real estate website with user authentication and property management fe
 
 - Node.js
 - Express.js
-- SQLite
+- MongoDB (via Mongoose)
 - HTML/CSS/JavaScript
 - JWT Authentication
 
@@ -34,4 +34,9 @@ A modern real estate website with user authentication and property management fe
 ## API Endpoints
 
 - `POST /api/signup` - User registration
-- `POST /api/login` - User login 
+- `POST /api/login` - User login
+- `GET /api/user` - Get user information
+
+## Deployment
+
+This project is deployed on Vercel with MongoDB Atlas for database storage. 
