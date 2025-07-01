@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const db = require('./db');
 
 const SECRET = 'REPLACE_THIS_WITH_A_SECRET_KEY';
 
@@ -27,7 +28,7 @@ module.exports = async (req, res) => {
 
   try {
     const decoded = jwt.verify(token, SECRET);
-    const user = users.find(u => u.id === decoded.id);
+    const user = db.findUserById(decoded.id);
     if (!user) {
       return res.status(404).json({ error: 'User not found.' });
     }

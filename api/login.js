@@ -1,10 +1,8 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const db = require('./db');
 
 const SECRET = 'REPLACE_THIS_WITH_A_SECRET_KEY';
-
-// In-memory storage (in production, use a proper database)
-let users = [];
 
 module.exports = async (req, res) => {
   // Enable CORS
@@ -27,7 +25,7 @@ module.exports = async (req, res) => {
     return res.status(400).json({ error: 'All fields required.' });
   }
 
-  const user = users.find(u => u.email === email);
+  const user = db.findUserByEmail(email);
   if (!user) {
     return res.status(400).json({ error: 'Invalid credentials.' });
   }

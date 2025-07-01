@@ -1,10 +1,8 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const db = require('./db');
 
 const SECRET = 'REPLACE_THIS_WITH_A_SECRET_KEY';
-
-// In-memory storage (in production, use a proper database)
-let users = [];
 
 module.exports = async (req, res) => {
   // Enable CORS
@@ -28,21 +26,13 @@ module.exports = async (req, res) => {
   }
 
   // Check if email already exists
-  const existingUser = users.find(user => user.email === email);
+  const existingUser = db.findUserByEmail(email);
   if (existingUser) {
     return res.status(400).json({ error: 'Email already registered.' });
   }
 
   const hash = bcrypt.hashSync(password, 10);
-  const newUser = {
-    id: users.length + 1,
-    username,
-    email,
-    password_hash: hash,
-    created_at: new Date()
-  };
-  
-  users.push(newUser);
+  const newUser = db.createUser({ username, email, password_hash: hash });
   const token = jwt.sign({ id: newUser.id, email }, SECRET, { expiresIn: '7d' });
   
   res.json({ token });
