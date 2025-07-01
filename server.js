@@ -1,6 +1,5 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
@@ -11,17 +10,8 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static(__dirname));
 
-// SQLite DB setup
-const db = new sqlite3.Database('./users.db', (err) => {
-  if (err) return console.error(err.message);
-  db.run(`CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT NOT NULL,
-    email TEXT NOT NULL UNIQUE,
-    password_hash TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-  )`);
-});
+// In-memory storage for demo (in production, use a proper database)
+const users = [];
 
 // Signup endpoint
 app.post('/api/signup', (req, res) => {
@@ -29,20 +19,22 @@ app.post('/api/signup', (req, res) => {
   if (!username || !email || !password)
     return res.status(400).json({ error: 'All fields required.' });
 
-  db.get('SELECT id FROM users WHERE email = ?', [email], (err, row) => {
-    if (row) return res.status(400).json({ error: 'Email already registered.' });
+  // Check if email already exists
+  const existingUser = users.find(user => user.email === email);
+  if (existingUser) return res.status(400).json({ error: 'Email already registered.' });
 
-    const hash = bcrypt.hashSync(password, 10);
-    db.run(
-      'INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)',
-      [username, email, hash],
-      function (err) {
-        if (err) return res.status(500).json({ error: 'Database error.' });
-        const token = jwt.sign({ id: this.lastID, email }, SECRET, { expiresIn: '7d' });
-        res.json({ token });
-      }
-    );
-  });
+  const hash = bcrypt.hashSync(password, 10);
+  const newUser = {
+    id: users.length + 1,
+    username,
+    email,
+    password_hash: hash,
+    created_at: new Date()
+  };
+  
+  users.push(newUser);
+  const token = jwt.sign({ id: newUser.id, email }, SECRET, { expiresIn: '7d' });
+  res.json({ token });
 });
 
 // Login endpoint
@@ -51,16 +43,41 @@ app.post('/api/login', (req, res) => {
   if (!email || !password)
     return res.status(400).json({ error: 'All fields required.' });
 
-  db.get('SELECT * FROM users WHERE email = ?', [email], (err, user) => {
-    if (!user) return res.status(400).json({ error: 'Invalid credentials.' });
-    if (!bcrypt.compareSync(password, user.password_hash))
-      return res.status(400).json({ error: 'Invalid credentials.' });
+  const user = users.find(u => u.email === email);
+  if (!user) return res.status(400).json({ error: 'Invalid credentials.' });
+  
+  if (!bcrypt.compareSync(password, user.password_hash))
+    return res.status(400).json({ error: 'Invalid credentials.' });
 
-    const token = jwt.sign({ id: user.id, email: user.email }, SECRET, { expiresIn: '7d' });
-    res.json({ token });
-  });
+  const token = jwt.sign({ id: user.id, email: user.email }, SECRET, { expiresIn: '7d' });
+  res.json({ token });
 });
 
-// Start server
-const PORT = 8000;
-app.listen(PORT, () => console.log(`Auth server running on http://localhost:${PORT}`)); 
+// User info endpoint
+app.get('/api/user', (req, res) => {
+  const token = req.query.token;
+  if (!token) return res.status(401).json({ error: 'No token provided.' });
+
+  try {
+    const decoded = jwt.verify(token, SECRET);
+    const user = users.find(u => u.id === decoded.id);
+    if (!user) return res.status(404).json({ error: 'User not found.' });
+    
+    res.json({
+      id: user.id,
+      username: user.username,
+      email: user.email
+    });
+  } catch (err) {
+    res.status(401).json({ error: 'Invalid token.' });
+  }
+});
+
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = 8000;
+  app.listen(PORT, () => console.log(`Auth server running on http://localhost:${PORT}`));
+}
+
+// For Vercel deployment
+module.exports = app; 
